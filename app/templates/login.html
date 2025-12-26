@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 400px; margin: auto; text-align: center;">
+    <h2>Login / Register</h2>
+    <p>Login to start logging beers.</p>
+    
+    <form action="/login" method="post" style="border: 1px solid #ddd; padding: 20px;">
+        <h3>Login</h3>
+        <input type="text" name="username" placeholder="Username" required style="margin-bottom: 10px; width: 90%;"><br>
+        <input type="password" name="password" placeholder="Password" required style="margin-bottom: 10px; width: 90%;"><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <br><hr><br>
+
+    <form action="/register" method="post" style="border: 1px solid #ddd; padding: 20px; background: #f9f9f9;">
+        <h3>Or Register</h3>
+        <input type="text" name="username" placeholder="Choose Username" required style="margin-bottom: 10px; width: 90%;"><br>
+        <input type="password" name="password" placeholder="Choose Password" required style="margin-bottom: 10px; width: 90%;"><br>
+        <button type="submit">Create Account</button>
+    </form>
+</div>
+{% endblock %}

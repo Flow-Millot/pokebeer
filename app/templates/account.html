@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Account: {{ user.username }}</h2>
+<p><strong>Member ID:</strong> {{ user.id }}</p>
+
+<h3>Beers you have added:</h3>
+<ul>
+    {% for beer in user.beers_added %}
+        <li>{{ beer.name }} ({{ beer.brewery }})</li>
+    {% else %}
+        <li>No beers added yet.</li>
+    {% endfor %}
+</ul>
+
+<h3>Your Ratings:</h3>
+<ul>
+    {% for rating in user.ratings %}
+        <li>You rated <strong>{{ rating.beer.name }}</strong>: {{ rating.score }} ⭐</li>
+    {% else %}
+        <li>No ratings yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
