@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PokeBeer</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        nav { background: #333; padding: 1rem; color: white; }
+        nav a { color: white; margin-right: 15px; text-decoration: none; }
+        .container { padding: 20px; max-width: 800px; margin: auto; background: white; min-height: 80vh; }
+        .beer-card { border-bottom: 1px solid #ddd; padding: 10px 0; }
+        .rank-list { background: #eef; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <strong style="font-size: 1.2em;">🍺 PokeBeer</strong>
+        <a href="/">Home</a>
+        {% if user %}
+            <a href="/add-beer">Add Beer</a>
+            <a href="/account">Account ({{ user.username }})</a>
+            <a href="/logout" style="float:right">Logout</a>
+        {% else %}
+            <a href="/login" style="float:right">Login</a>
+        {% endif %}
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
