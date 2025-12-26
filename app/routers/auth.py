@@ -29,7 +29,7 @@ def login(response: Response, username: str = Form(...), password: str = Form(..
         value=access_token, 
         httponly=True,
         secure=True, 
-        samesite="lax",
+        samesite="none",
         max_age=1800
     )
     
