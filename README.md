@@ -1,7 +1,7 @@
 ---
 title: Pokebeer
 emoji: 🍻
-colorFrom: orange
+colorFrom: red
 colorTo: yellow
 sdk: docker
 sdk_version: 4.19.2
