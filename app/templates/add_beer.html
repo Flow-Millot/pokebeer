@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Add a New Beer</h2>
+<form action="/add_beer" method="post">
+    <div style="margin-bottom: 10px;">
+        <label>Beer Name:</label><br>
+        <input type="text" name="name" required style="width: 100%; padding: 8px;">
+    </div>
+    <div style="margin-bottom: 10px;">
+        <label>Brewery:</label><br>
+        <input type="text" name="brewery" required style="width: 100%; padding: 8px;">
+    </div>
+    <button type="submit" style="padding: 10px 20px;">Add Beer to DB</button>
+</form>
+{% endblock %}

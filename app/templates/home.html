@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Home</h2>
+
+<div class="rank-list">
+    <h3>🏆 Top 10 Beers (This Month)</h3>
+    {% if not top_month %} <p>No ratings yet this month.</p> {% endif %}
+    <ol>
+    {% for beer, avg, count in top_month %}
+        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery }}) - ⭐ {{ "%.1f"|format(avg) }} ({{ count }} votes)</li>
+    {% endfor %}
+    </ol>
+</div>
+
+<div class="rank-list" style="background: #fff3cd;">
+    <h3>👑 Top 10 Beers (All Time)</h3>
+    {% if not top_all_time %} <p>No ratings yet.</p> {% endif %}
+    <ol>
+    {% for beer, avg, count in top_all_time %}
+        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery }}) - ⭐ {{ "%.1f"|format(avg) }} ({{ count }} votes)</li>
+    {% endfor %}
+    </ol>
+</div>
+
+<hr>
+
+<h3>Rate a Beer</h3>
+{% if user %}
+    <div style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
+    {% for beer in all_beers %}
+        <div class="beer-card">
+            <form action="/rate_beer" method="post" style="display:flex; justify-content:space-between;">
+                <span><strong>{{ beer.name }}</strong> ({{ beer.brewery }})</span>
+                <input type="hidden" name="beer_id" value="{{ beer.id }}">
+                <div>
+                    <select name="score">
+                        <option value="5">5 ⭐</option>
+                        <option value="4">4 ⭐</option>
+                        <option value="3">3 ⭐</option>
+                        <option value="2">2 ⭐</option>
+                        <option value="1">1 ⭐</option>
+                    </select>
+                    <button type="submit">Rate</button>
+                </div>
+            </form>
+        </div>
+    {% endfor %}
+    </div>
+{% else %}
+    <p><a href="/login">Login</a> to rate beers.</p>
+{% endif %}
+
+{% endblock %}
