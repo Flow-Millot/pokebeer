@@ -18,4 +18,4 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push https://Flow-Millot:$HF_TOKEN@huggingface.co/spaces/Flow-Millot/pokebeer main
+        run: git push --force https://Flow-Millot:$HF_TOKEN@huggingface.co/spaces/Flow-Millot/pokebeer main
