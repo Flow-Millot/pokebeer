@@ -1,35 +1,43 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-from .database import Base
+from django.db import models
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+    BaseUserManager,
+)
+from django.utils import timezone
+from django.contrib.auth.models import UserManager
+from datetime import date
 
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
-    
-    beers_added = relationship("Beer", back_populates="adder")
-    ratings = relationship("Rating", back_populates="user")
+class BeerUser(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True, null=False, blank=False)
+    created_at = models.DateTimeField(default=timezone.now)
+    username = models.CharField(max_length=150, blank=False, unique=True)
+    is_staff = models.BooleanField(default=False)
 
-class Beer(Base):
-    __tablename__ = "beers"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    brewery = Column(String)
-    adder_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = []
 
-    adder = relationship("User", back_populates="beers_added")
-    ratings = relationship("Rating", back_populates="beer")
+    objects = UserManager()
 
-class Rating(Base):
-    __tablename__ = "ratings"
-    id = Column(Integer, primary_key=True, index=True)
-    score = Column(Integer) # 1 to 5
-    user_id = Column(Integer, ForeignKey("users.id"))
-    beer_id = Column(Integer, ForeignKey("beers.id"))
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    user = relationship("User", back_populates="ratings")
-    beer = relationship("Beer", back_populates="ratings")
+class Brewery(models.Model):
+    name = models.CharField(max_length=150, blank=False, unique=True)
+    descritpion = models.TextField()
+    city = models.CharField(max_length=150)
+
+class Beer(models.Model):
+    name = models.CharField(max_length=150, blank=False, unique=True)
+    descritpion = models.TextField()
+    bitterness = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    degree = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+
+    brewery_id = models.ForeignKey(Brewery, on_delete=models.CASCADE)
+
+
+class Drinks(models.Model):
+    date = models.DateField(default=date.today)
+    note = models.IntegerField(default=0)
+    comment = models.TextField()
+
+    drinker_id = models.ForeignKey(BeerUser, on_delete=models.CASCADE)
+    beer_id = models.ForeignKey(Beer, on_delete=models.CASCADE)

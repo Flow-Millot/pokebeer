@@ -1,10 +1,6 @@
-fastapi
-uvicorn
-sqlalchemy
-psycopg2-binary
-jinja2
-python-multipart
-passlib
-bcrypt==3.2.2
-python-jose[cryptography]
-psycopg2-binary
+asgiref==3.11.0
+Django==6.0
+dotenv==0.9.9
+psycopg==3.3.2
+python-dotenv==1.2.1
+sqlparse==0.5.5
