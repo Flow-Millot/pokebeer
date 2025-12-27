@@ -67,7 +67,7 @@ def chat_endpoint(request: ChatRequest, db: Session = Depends(database.get_db)):
     ]
 
     try:
-        # 2. Appel via la méthode compatible OpenAI (recommandée par la doc)
+        # 2. Appel via la méthode compatible OpenAI
         response = client.chat.completions.create(
             model=MODEL_ID,
             messages=messages,
