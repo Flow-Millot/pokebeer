@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Home</h2>
+<div class="rank-list">
+    <h3>🏆 Top 10 Beers (This Month)</h3>
+    {% if not topMonth %} <p>No ratings yet this month.</p> {% endif %}
+    <ol>
+    {% for beer in topMonth %}
+        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating}}</li>
+    {% endfor %}
+    </ol>
+</div>
+
+<div class="rank-list" style="background: #fff3cd;">
+    <h3>👑 Top 10 Beers (All Time)</h3>
+    {% if not top %} <p>No ratings yet.</p> {% endif %}
+    <ol>
+    {% for beer in top %}
+        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating}}</li>
+    {% endfor %}
+    </ol>
+</div>
+
+
+{% endblock %}
