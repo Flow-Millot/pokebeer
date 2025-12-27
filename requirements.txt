@@ -4,3 +4,5 @@ dotenv==0.9.9
 psycopg==3.3.2
 python-dotenv==1.2.1
 sqlparse==0.5.5
+whitenoise
+gunicorn
