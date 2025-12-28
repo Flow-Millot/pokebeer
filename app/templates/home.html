@@ -45,8 +45,8 @@
 {% endif %}
 
 <div class="rank-list">
-    <h3>🏆 Top 10 Beers (This Month)</h3>
-    {% if not topMonth %} <p>No ratings yet this month.</p> {% endif %}
+    <h3>🏆 Top 10 (Ce mois)</h3>
+    {% if not topMonth %} <p>Pas encore de note pour ce mois.</p> {% endif %}
     <ol>
     {% for beer in topMonth %}
         <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating|floatformat:1}}</li>
@@ -55,8 +55,8 @@
 </div>
 
 <div class="rank-list" style="background: #fff3cd;">
-    <h3>👑 Top 10 Beers (All Time)</h3>
-    {% if not top %} <p>No ratings yet.</p> {% endif %}
+    <h3>👑 Top 10 (Global)</h3>
+    {% if not top %} <p>Pas encore de note.</p> {% endif %}
     <ol>
     {% for beer in top %}
         <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating|floatformat:1}}</li>
