@@ -1,24 +1,110 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Account: {{ user.username }}</h2>
-<p><strong>Member ID:</strong> {{ user.id }}</p>
+<div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 20px;">
+    
+    <div style="flex: 1; min-width: 300px;">
+        
+        <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px;">
+            <h3 style="border-bottom: 2px solid #007bff; padding-bottom: 10px; color: #333; margin-top: 0;">
+                👤 Mes Informations
+            </h3>
+            
+            <form method="post">
+                {% csrf_token %}
+                {% for field in profile_form %}
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight: bold; margin-bottom: 5px; color: #555;">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div style="color: red; font-size: 0.9em;">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                
+                <button type="submit" name="btn_profile" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Mettre à jour le profil
+                </button>
+            </form>
+        </div>
 
-<h3>Beers you have added:</h3>
-<ul>
-    {% for beer in user.beers_added %}
-        <li>{{ beer.name }} ({{ beer.brewery }})</li>
-    {% else %}
-        <li>No beers added yet.</li>
-    {% endfor %}
-</ul>
+        <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <h3 style="border-bottom: 2px solid #dc3545; padding-bottom: 10px; color: #333; margin-top: 0;">
+                🔒 Sécurité
+            </h3>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in password_form %}
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-weight: bold; margin-bottom: 5px; color: #555;">{{ field.label }}</label>
+                        <div class="field-wrapper">
+                            {{ field }}
+                        </div>
+                        <style> .field-wrapper input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; } </style>
+                        
+                        {% if field.help_text %}
+                            <small style="color: #888; display: block; margin-top: 3px; font-size: 0.8em;">{{ field.help_text|safe }}</small>
+                        {% endif %}
+                        
+                        {% for error in field.errors %}
+                            <div style="color: red; font-size: 0.9em; margin-top: 5px;">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                
+                <button type="submit" name="btn_password" style="width: 100%; padding: 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    Changer le mot de passe
+                </button>
+            </form>
+        </div>
 
-<h3>Your Ratings:</h3>
-<ul>
-    {% for rating in user.ratings %}
-        <li>You rated <strong>{{ rating.beer.name }}</strong>: {{ rating.score }} ⭐</li>
-    {% else %}
-        <li>No ratings yet.</li>
-    {% endfor %}
-</ul>
+    </div>
+
+    <div style="flex: 2; min-width: 300px;">
+        <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #333; margin-top: 0;">
+            🍺 Mon Carnet de Dégustation ({{ my_drinks|length }})
+        </h3>
+        {% if my_drinks %}
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                {% for drink in my_drinks %}
+                <div style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; display: flex; align-items: flex-start;">
+                    
+                    <div style="background: #f8f9fa; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2em; color: #333; margin-right: 15px; border: 2px solid 
+                        {% if drink.note >= 8 %}#28a745
+                        {% elif drink.note >= 5 %}#ffc107
+                        {% else %}#dc3545{% endif %};">
+                        {{ drink.note }}
+                    </div>
+
+                    <div style="flex: 1;">
+                        <h4 style="margin: 0 0 5px 0;">
+                            {{ drink.beer_id.name }} 
+                            <span style="font-weight: normal; font-size: 0.9em; color: #666;">
+                                — {{ drink.beer_id.brewery_id.name }}
+                            </span>
+                        </h4>
+                        
+                        <p style="margin: 0 0 10px 0; font-size: 0.9em; color: #888;">
+                            Bu le {{ drink.date|date:"d F Y" }}
+                        </p>
+
+                        {% if drink.comment %}
+                            <div style="background: #fdfdfd; padding: 10px; border-left: 3px solid #ddd; font-style: italic; color: #555;">
+                                "{{ drink.comment }}"
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div style="background: #eef; padding: 20px; border-radius: 8px; text-align: center;">
+                <p>Vous n'avez pas encore noté de bière.</p>
+                <a href="{% url 'index' %}" style="color: #007bff; text-decoration: underline;">Commencer à noter !</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
