@@ -80,7 +80,7 @@ def account_view(request):
 
     my_drinks = Drinks.objects.filter(drinker_id=request.user)\
         .select_related('beer_id', 'beer_id__brewery_id')\
-        .order_by('-date')
+        .order_by('-date', 'beer_id__name')
 
     context = {
         'profile_form': profile_form,
