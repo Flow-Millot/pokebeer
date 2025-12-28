@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=150, unique=True)),
-                ('descritpion', models.CharField(max_length=500)),
+                ('description', models.CharField(max_length=500)),
                 ('city', models.CharField(max_length=150)),
             ],
         ),
@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=150, unique=True)),
-                ('descritpion', models.CharField(max_length=500)),
+                ('description', models.CharField(max_length=500)),
                 ('bitterness', models.DecimalField(decimal_places=2, default=0, max_digits=3)),
                 ('degree', models.DecimalField(decimal_places=2, default=0, max_digits=3)),
                 ('brewery_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.brewery')),

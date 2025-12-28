@@ -25,22 +25,25 @@ else:
 
 def format_beers_context():
     """Formate la liste des bières via l'ORM Django"""
-    # On récupère toutes les bières
-    beers = Beer.objects.all()
+    # On utilise select_related pour optimiser la requête (récupère la brasserie en même temps)
+    beers = Beer.objects.select_related('brewery_id').all()
     
     if not beers:
         return None
         
     context_list = []
     for b in beers:
-        # Adaptation des champs selon votre modèle Django exact
-        # J'assume que votre modèle a name, brewery, et potentiellement style/description
-        style = getattr(b, "style", "Style inconnu")
-        desc = getattr(b, "description", "Pas de description")
-        # Si description est None
-        if desc is None: desc = "Pas de description"
-            
-        line = f"- {b.name} ({b.brewery}) | Style: {style} | {desc}"
+        # Dans ton model, la Foreign Key s'appelle 'brewery_id', donc Django utilise ce nom pour l'objet lié
+        brasserie = b.brewery_id
+        desc = b.description
+        
+        # On formate avec toutes les infos utiles au sommelier (Ville, Degré, Amertume)
+        line = (
+            f"- {b.name} (Brasserie {brasserie.name} à {brasserie.city}) | "
+            f"Alcool: {b.degree}% | "
+            f"Amertume: {b.bitterness} | "
+            f"Description: {desc}"
+        )
         context_list.append(line)
         
     return "\n".join(context_list)
