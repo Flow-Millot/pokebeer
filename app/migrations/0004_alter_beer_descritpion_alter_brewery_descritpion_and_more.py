@@ -12,12 +12,12 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='beer',
-            name='descritpion',
+            name='description',
             field=models.TextField(),
         ),
         migrations.AlterField(
             model_name='brewery',
-            name='descritpion',
+            name='description',
             field=models.TextField(),
         ),
         migrations.AlterField(
