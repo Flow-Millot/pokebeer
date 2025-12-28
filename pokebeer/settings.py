@@ -134,5 +134,12 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 USE_X_FORWARDED_PORT = True
 
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_HTTPONLY = False  # DOIT être False pour que le JS puisse lire le cookie via document.cookie
+CSRF_COOKIE_SAMESITE = 'None' # Permet le fonctionnement dans l'iframe HF
+SESSION_COOKIE_SAMESITE = 'None'
+
 # Autoriser l'affichage dans l'Iframe de Hugging Face
 X_FRAME_OPTIONS = 'SAMEORIGIN'
