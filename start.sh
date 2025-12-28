@@ -7,7 +7,7 @@ done
 echo "PostgreSQL started"
 
 
-# Appliquer les migrations (indispensable)
+# Appliquer les migrations
 echo "Applying migrations..."
 python manage.py migrate --noinput
 
