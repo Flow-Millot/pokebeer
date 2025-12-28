@@ -10,6 +10,10 @@
         .beer-card { border-bottom: 1px solid #ddd; padding: 10px 0; }
         .rank-list { background: #eef; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
     </style>
+    <script>
+        // Cette variable ne sert à rien d'autre qu'à forcer Django à envoyer le cookie
+        var _csrf_placeholder = "{{ csrf_token }}"; 
+    </script>
 </head>
 <body>
     <nav>
