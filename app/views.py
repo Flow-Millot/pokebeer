@@ -25,8 +25,8 @@ else:
 
 def format_beers_context():
     """Formate la liste des bières via l'ORM Django"""
-    # On récupère les 50 premières bières
-    beers = Beer.objects.all()[:50]
+    # On récupère toutes les bières
+    beers = Beer.objects.all()
     
     if not beers:
         return None
@@ -63,7 +63,7 @@ def chat_api(request):
     messages = [
         {
             "role": "system",
-            "content": f"""Tu es un sommelier bière expert.
+            "content": f"""Tu es Gaétan, un sommelier bière expert.
             Ton stock est LIMITÉ à cette liste :
             {beers_context}
             
