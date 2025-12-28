@@ -1,13 +1,55 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Home</h2>
+
+<style>
+    .modal {
+        display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+        width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);
+    }
+    .modal-content {
+        background-color: #fefefe; margin: 10% auto; padding: 20px;
+        border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 8px;
+    }
+    .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+    .beer-item {
+        display: flex; justify-content: space-between; align-items: center;
+        background: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd;
+    }
+</style>
+
+{% if user.is_authenticated %}
+<div style="margin-bottom: 30px;">
+    <h3>🍺 Bières à découvrir</h3>
+    {% if unrated_beers %}
+        <div class="beer-list">
+            {% for beer in unrated_beers %}
+            <div class="beer-item">
+                <div>
+                    <strong>{{ beer.name }}</strong> 
+                    <span style="color: #666; font-size: 0.9em;">({{ beer.brewery_id.name }})</span>
+                    <br>
+                    <small>{{ beer.description|truncatechars:80 }}</small>
+                </div>
+                <button onclick="openRateModal('{{ beer.id }}', '{{ beer.name|escapejs }}')" 
+                        style="background: #007bff; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer;">
+                    Noter
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Incroyable ! Vous avez noté toutes les bières de notre stock ! 👏</p>
+    {% endif %}
+</div>
+{% endif %}
+
 <div class="rank-list">
     <h3>🏆 Top 10 Beers (This Month)</h3>
     {% if not topMonth %} <p>No ratings yet this month.</p> {% endif %}
     <ol>
     {% for beer in topMonth %}
-        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating}}</li>
+        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating|floatformat:1}}</li>
     {% endfor %}
     </ol>
 </div>
@@ -17,10 +59,66 @@
     {% if not top %} <p>No ratings yet.</p> {% endif %}
     <ol>
     {% for beer in top %}
-        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating}}</li>
+        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating|floatformat:1}}</li>
     {% endfor %}
     </ol>
 </div>
 
+<div id="rateModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeRateModal()">&times;</span>
+        <h3 id="modalTitle">Noter une bière</h3>
+        
+        <form id="rateForm" method="post" action="">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 15px;">
+                <label>{{ rating_form.date.label }}</label>
+                {{ rating_form.date }}
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>{{ rating_form.note.label }}</label>
+                {{ rating_form.note }}
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>{{ rating_form.comment.label }}</label>
+                {{ rating_form.comment }}
+            </div>
+
+            <button type="submit" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                Enregistrer mon avis
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    var modal = document.getElementById("rateModal");
+    var form = document.getElementById("rateForm");
+    var title = document.getElementById("modalTitle");
+
+    function openRateModal(beerId, beerName) {
+        // 1. On met à jour le titre
+        title.innerText = "Noter : " + beerName;
+        
+        // 2. On change dynamiquement l'URL d'action du formulaire
+        // On remplace le '0' ou le placeholder par l'ID réel
+        form.action = "/rate-beer/" + beerId + "/";
+        
+        // 3. On affiche la modale
+        modal.style.display = "block";
+    }
+
+    function closeRateModal() {
+        modal.style.display = "none";
+    }
+
+    // Fermer si on clique en dehors
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            closeRateModal();
+        }
+    }
+</script>
 
 {% endblock %}

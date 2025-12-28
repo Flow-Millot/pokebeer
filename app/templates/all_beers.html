@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Layout général : Sidebar + Contenu */
+    .catalog-container {
+        display: flex;
+        gap: 30px;
+        margin-top: 20px;
+        align-items: flex-start;
+    }
+
+    /* Sidebar des filtres */
+    .filters-sidebar {
+        flex: 1;
+        min-width: 250px;
+        background: white;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        position: sticky;
+        top: 20px;
+    }
+
+    /* Grille des résultats */
+    .beers-grid {
+        flex: 3;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    /* Carte Bière */
+    .beer-card-catalog {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .beer-card-catalog:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Style des formulaires de filtre */
+    .filter-group { margin-bottom: 20px; }
+    .filter-group h4 { margin-bottom: 10px; border-bottom: 2px solid #f1c40f; padding-bottom: 5px; }
+    .filter-label { display: block; margin-bottom: 8px; cursor: pointer; }
+    
+    /* Boutons */
+    .btn-search { background: #333; color: white; width: 100%; border: none; padding: 10px; border-radius: 4px; cursor: pointer; }
+    .btn-reset { display: block; text-align: center; margin-top: 10px; color: #666; text-decoration: underline; font-size: 0.9em; }
+
+    /* Modal (Popup) Copié de Home pour la consistance */
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+    .modal-content { background-color: #fefefe; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 8px; }
+    .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+</style>
+
+<h2 style="margin-bottom: 20px;">🍺 L'Annuaire des Bières</h2>
+
+<div class="catalog-container">
+    
+    <div class="filters-sidebar">
+        <form method="get">
+            
+            <div class="filter-group">
+                <h4>🔍 Recherche</h4>
+                <input type="text" name="q" placeholder="Nom ou Brasserie..." value="{{ request.GET.q }}" 
+                       style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+            </div>
+
+            <div class="filter-group">
+                <h4>🌡️ Puissance (Alcool)</h4>
+                <label class="filter-label">
+                    <input type="radio" name="degree" value="" {% if not request.GET.degree %}checked{% endif %}> 
+                    Tout voir
+                </label>
+                <label class="filter-label">
+                    <input type="radio" name="degree" value="light" {% if request.GET.degree == 'light' %}checked{% endif %}> 
+                    Légère (< 5%)
+                </label>
+                <label class="filter-label">
+                    <input type="radio" name="degree" value="regular" {% if request.GET.degree == 'regular' %}checked{% endif %}> 
+                    Standard (5-8%)
+                </label>
+                <label class="filter-label">
+                    <input type="radio" name="degree" value="strong" {% if request.GET.degree == 'strong' %}checked{% endif %}> 
+                    Forte (> 8%)
+                </label>
+            </div>
+
+            <div class="filter-group">
+                <h4>🌿 Amertume (IBU)</h4>
+                <label class="filter-label">
+                    <input type="radio" name="ibu" value="" {% if not request.GET.ibu %}checked{% endif %}> 
+                    Tout voir
+                </label>
+                <label class="filter-label">
+                    <input type="radio" name="ibu" value="low" {% if request.GET.ibu == 'low' %}checked{% endif %}> 
+                    Douce / Fruitée
+                </label>
+                <label class="filter-label">
+                    <input type="radio" name="ibu" value="medium" {% if request.GET.ibu == 'medium' %}checked{% endif %}> 
+                    Équilibrée
+                </label>
+                <label class="filter-label">
+                    <input type="radio" name="ibu" value="high" {% if request.GET.ibu == 'high' %}checked{% endif %}> 
+                    Amère / IPA
+                </label>
+            </div>
+
+            <button type="submit" class="btn-search">Filtrer</button>
+            <a href="{% url 'all_beers' %}" class="btn-reset">Réinitialiser les filtres</a>
+        </form>
+    </div>
+
+    <div class="beers-grid">
+        {% for beer in beers %}
+        <div class="beer-card-catalog">
+            <div>
+                <h3 style="margin: 0 0 5px 0; color: #333;">{{ beer.name }}</h3>
+                <span style="font-size: 0.9em; color: #666; font-weight: bold;">{{ beer.brewery_id.name }}</span>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                
+                <div style="display: flex; justify-content: space-between; font-size: 0.85em; margin-bottom: 10px; color: #555;">
+                    <span>🍺 {{ beer.degree }}% Vol.</span>
+                    <span>🌿 IBU: {{ beer.bitterness }}</span>
+                </div>
+
+                <p style="font-size: 0.9em; color: #666; line-height: 1.4;">
+                    {{ beer.description|truncatechars:80 }}
+                </p>
+            </div>
+
+            {% if user.is_authenticated %}
+                
+                {% if beer.id in rated_beer_ids %}
+                    <button disabled 
+                            style="width: 100%; margin-top: 15px; padding: 8px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: not-allowed; opacity: 0.8;">
+                        ✅ Déjà noté
+                    </button>
+                {% else %}
+                    <button onclick="openRateModal('{{ beer.id }}', '{{ beer.name|escapejs }}')" 
+                            style="width: 100%; margin-top: 15px; padding: 8px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        ⭐ Noter
+                    </button>
+                {% endif %}
+
+            {% else %}
+                <a href="{% url 'login' %}?next={% url 'all_beers' %}" 
+                   style="display:block; text-align:center; margin-top:15px; text-decoration:none; color: #007bff; font-size: 0.9em;">
+                   Se connecter pour noter
+                </a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; background: white; border-radius: 8px;">
+            <h3>Aucune bière trouvée :/</h3>
+            <p>Essayez de modifier vos filtres ou <a href="/add-beer">ajoutez-la vous-même !</a></p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="rateModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeRateModal()">&times;</span>
+        <h3 id="modalTitle">Noter une bière</h3>
+        <form id="rateForm" method="post" action="">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px;">
+                <label>{{ rating_form.date.label }}</label>
+                {{ rating_form.date }}
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>{{ rating_form.note.label }}</label>
+                {{ rating_form.note }}
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>{{ rating_form.comment.label }}</label>
+                {{ rating_form.comment }}
+            </div>
+            <button type="submit" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">Enregistrer</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    var modal = document.getElementById("rateModal");
+    var form = document.getElementById("rateForm");
+    var title = document.getElementById("modalTitle");
+
+    function openRateModal(beerId, beerName) {
+        title.innerText = "Noter : " + beerName;
+        form.action = "/rate-beer/" + beerId + "/";
+        modal.style.display = "block";
+    }
+
+    function closeRateModal() { modal.style.display = "none"; }
+    window.onclick = function(event) { if (event.target == modal) closeRateModal(); }
+</script>
+
+{% endblock %}

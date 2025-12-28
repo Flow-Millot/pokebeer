@@ -17,17 +17,32 @@
 </head>
 <body>
     <nav>
-        <strong style="font-size: 1.2em;">🍺 PokeBeer</strong>
-        <a href="/">Home</a>
-        {% if user %}
-            <a href="/add-beer">Add Beer</a>
-            <a href="/account">Account ({{ user.username }})</a>
-            <a href="/logout" style="float:right">Logout</a>
+        <a href="{% url 'index' %}"><strong style="font-size: 1.2em;">🍺 PokeBeer</strong></a>
+        <a href="{% url 'all_beers' %}">Toutes les bières</a>
+        
+        {% if user.is_authenticated %}
+            <a href="{% url 'add_beer' %}">Ajouter une bière</a>
+            <a href="{% url 'account' %}">Compte ({{ user.username }})</a>
+            <a href="{% url 'logout' %}" style="float:right">Déconnexion</a>
         {% else %}
-            <a href="/login" style="float:right">Login</a>
+            <a href="{% url 'login' %}" style="float:right">Connexion</a>
         {% endif %}
     </nav>
     <div class="container">
+        {% if messages %}
+            <div class="messages" style="margin-bottom: 20px;">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" 
+                         style="padding: 10px; border-radius: 5px; margin-bottom: 5px;
+                         {% if message.tags == 'error' %}background:#f8d7da; color:#721c24;{% endif %}
+                         {% if message.tags == 'success' %}background:#d4edda; color:#155724;{% endif %}
+                         {% if message.tags == 'info' %}background:#d1ecf1; color:#0c5460;{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {% block content %}{% endblock %}
     </div>
     <div id="chat-circle" onclick="toggleChat()">🍺</div>
