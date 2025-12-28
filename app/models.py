@@ -28,8 +28,8 @@ class Brewery(models.Model):
 class Beer(models.Model):
     name = models.CharField(max_length=150, blank=False, unique=True)
     description = models.TextField()
-    bitterness = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-    degree = models.DecimalField(max_digits=3, decimal_places=2, default=0)
+    bitterness = models.IntegerField(default=0)
+    degree = models.DecimalField(max_digits=4, decimal_places=1, default=0)
 
     brewery_id = models.ForeignKey(Brewery, on_delete=models.CASCADE)
 
