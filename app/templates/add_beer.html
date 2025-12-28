@@ -1,16 +1,163 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Add a New Beer</h2>
-<form action="/add_beer" method="post">
-    <div style="margin-bottom: 10px;">
-        <label>Beer Name:</label><br>
-        <input type="text" name="name" required style="width: 100%; padding: 8px;">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <label>Brewery:</label><br>
-        <input type="text" name="brewery" required style="width: 100%; padding: 8px;">
-    </div>
-    <button type="submit" style="padding: 10px 20px;">Add Beer to DB</button>
-</form>
+<style>
+    /* Style pour la liste d'autocomplétion */
+    .autocomplete-items {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: white;
+        border-radius: 0 0 5px 5px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .autocomplete-items div {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #fff;
+        border-bottom: 1px solid #d4d4d4;
+    }
+    .autocomplete-items div:hover {
+        background-color: #e9e9e9; 
+    }
+    .input-wrapper {
+        position: relative;
+    }
+</style>
+
+<div style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+    <h2 style="text-align: center; color: #333;">🍺 Ajouter & Noter</h2>
+    
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        
+        <h4 style="border-bottom: 2px solid #f1c40f; padding-bottom: 5px; margin-top: 0;">1. Informations Bière</h4>
+        
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-weight: bold; margin-bottom: 5px;">{{ beer_form.name.label }}</label>
+            <div class="input-wrapper">
+                {{ beer_form.name }}
+                <div id="beer-suggestions" class="autocomplete-items" style="display:none;"></div>
+            </div>
+            <small style="color: #888; font-size: 0.8em;">Si le nom apparaît, la bière existe déjà !</small>
+            {{ beer_form.name.errors }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label style="display:block; font-weight: bold; margin-bottom: 5px;">{{ beer_form.brewery_name.label }}</label>
+            <div class="input-wrapper">
+                {{ beer_form.brewery_name }}
+                <div id="brewery-suggestions" class="autocomplete-items" style="display:none;"></div>
+            </div>
+            <small style="color: #666;">{{ beer_form.brewery_name.help_text }}</small>
+            {{ beer_form.brewery_name.errors }}
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+                <label style="display:block; font-weight: bold;">{{ beer_form.degree.label }}</label>
+                {{ beer_form.degree }}
+                {{ beer_form.degree.errors }}
+            </div>
+            <div style="flex: 1;">
+                <label style="display:block; font-weight: bold;">{{ beer_form.bitterness.label }}</label>
+                {{ beer_form.bitterness }}
+                {{ beer_form.bitterness.errors }}
+            </div>
+        </div>
+
+        <div style="margin-bottom: 15px; margin-top: 15px;">
+            <label style="display:block; font-weight: bold; margin-bottom: 5px;">{{ beer_form.description.label }}</label>
+            {{ beer_form.description }}
+            {{ beer_form.description.errors }}
+        </div>
+
+        <h4 style="border-bottom: 2px solid #28a745; padding-bottom: 5px; margin-top: 30px;">2. Ma Dégustation</h4>
+        
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; font-weight: bold; margin-bottom: 5px;">{{ drink_form.date.label }}</label>
+                {{ drink_form.date }}
+                {{ drink_form.date.errors }}
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; font-weight: bold; margin-bottom: 5px;">{{ drink_form.note.label }}</label>
+                {{ drink_form.note }}
+                {{ drink_form.note.errors }}
+            </div>
+
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; font-weight: bold; margin-bottom: 5px;">{{ drink_form.comment.label }}</label>
+                {{ drink_form.comment }}
+                {{ drink_form.comment.errors }}
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" style="padding: 12px 40px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1em; font-weight: bold;">
+                Enregistrer le tout
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function setupAutocomplete(inputId, suggestionId, apiUrl) {
+        const input = document.getElementById(inputId);
+        const suggestionsBox = document.getElementById(suggestionId);
+
+        // Sécurité si l'élément n'existe pas (évite les erreurs console)
+        if (!input || !suggestionsBox) return;
+
+        input.addEventListener("input", async function(e) {
+            const val = this.value;
+            suggestionsBox.innerHTML = '';
+            suggestionsBox.style.display = 'none';
+            
+            if (!val || val.length < 2) return;
+
+            try {
+                const response = await fetch(`${apiUrl}?term=${encodeURIComponent(val)}`);
+                const data = await response.json();
+
+                if (data.length > 0) {
+                    suggestionsBox.style.display = 'block';
+                    data.forEach(item => {
+                        const div = document.createElement("div");
+                        div.innerHTML = `<strong>${item.substr(0, val.length)}</strong>${item.substr(val.length)}`;
+                        div.innerHTML += `<input type='hidden' value='${item}'>`;
+                        
+                        div.addEventListener("click", function(e) {
+                            input.value = this.getElementsByTagName("input")[0].value;
+                            suggestionsBox.innerHTML = '';
+                            suggestionsBox.style.display = 'none';
+                        });
+                        suggestionsBox.appendChild(div);
+                    });
+                }
+            } catch (error) {
+                console.error("Erreur API suggestion", error);
+            }
+        });
+
+        document.addEventListener("click", function (e) {
+            if (e.target !== input) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+    }
+
+    // Initialisation
+    // CRUCIAL : Notez les IDs modifiés par le prefix='beer'
+    document.addEventListener("DOMContentLoaded", function() {
+        setupAutocomplete('id_beer-brewery_name', 'brewery-suggestions', '/api/search-brewery/');
+        setupAutocomplete('id_beer-name', 'beer-suggestions', '/api/search-beer/');
+    });
+</script>
 {% endblock %}
