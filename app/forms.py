@@ -107,7 +107,7 @@ class DrinkForm(forms.ModelForm):
         }
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
-            'comment': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Ex: Fruitée, légère...'}),
+            'comment': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Votre expérience, vos impressions en toute subjectivité...'}),
             'note': forms.NumberInput(attrs={'min': 0, 'max': 10}),
         }
 

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Avg, Q
+from django.db.models import Avg, Q, Count
 from django.utils import timezone
 from django.views.decorators.csrf import ensure_csrf_cookie
 
@@ -14,9 +14,16 @@ def index(request):
     year = timezone.now().year
     
     # Tops
-    top10 = Beer.objects.annotate(avg_rating=Avg('drinks__note')).order_by('-avg_rating')[:10]
-    top10Month = Beer.objects.annotate(avg_rating=Avg('drinks__note', filter=Q(drinks__date__year=year, drinks__date__month=month))).filter(avg_rating__isnull=False).order_by('-avg_rating')[:10]
-
+    top10 = Beer.objects.annotate(
+        avg_rating=Avg('drinks__note'),
+        count_rating=Count('drinks')  # Compte total
+    ).order_by('-avg_rating')[:10]
+    
+    top10Month = Beer.objects.annotate(
+            avg_rating=Avg('drinks__note', filter=Q(drinks__date__year=year, drinks__date__month=month)),
+            count_rating=Count('drinks', filter=Q(drinks__date__year=year, drinks__date__month=month)) # Compte filtré par mois
+        ).filter(avg_rating__isnull=False).order_by('-avg_rating')[:10]
+    
     # Bières non notées
     unrated_beers = []
     rating_form = None

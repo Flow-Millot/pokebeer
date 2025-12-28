@@ -48,8 +48,12 @@
     <h3>🏆 Top 10 (Ce mois)</h3>
     {% if not topMonth %} <p>Pas encore de note pour ce mois.</p> {% endif %}
     <ol>
-    {% for beer in topMonth %}
-        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating|floatformat:1}}</li>
+        {% for beer in topMonth %}
+        <li>
+            <strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) 
+            - ⭐ {{ beer.avg_rating|floatformat:1 }} 
+            <small style="color: grey;">({{ beer.count_rating }} votes)</small>
+        </li>
     {% endfor %}
     </ol>
 </div>
@@ -58,8 +62,12 @@
     <h3>👑 Top 10 (Global)</h3>
     {% if not top %} <p>Pas encore de note.</p> {% endif %}
     <ol>
-    {% for beer in top %}
-        <li><strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) - ⭐ {{beer.avg_rating|floatformat:1}}</li>
+        {% for beer in top %}
+        <li>
+            <strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) 
+            - ⭐ {{ beer.avg_rating|floatformat:1 }} 
+            <small style="color: grey;">({{ beer.count_rating }} votes)</small>
+        </li>
     {% endfor %}
     </ol>
 </div>
