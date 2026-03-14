@@ -43,6 +43,8 @@ SESSION_COOKIE_SAMESITE = 'None'
 # Application definition
 
 INSTALLED_APPS = [
+    'tailwind',
+    'theme',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -146,3 +148,16 @@ CSRF_COOKIE_HTTPONLY = False  # DOIT être False pour que le JS puisse lire le c
 
 # Autoriser l'affichage dans l'Iframe de Hugging Face
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+#Nom du dossier contenant TailwindCSS
+TAILWIND_APP_NAME = "theme"
+
+if DEBUG:
+    # Add django_browser_reload only in DEBUG mode
+    INSTALLED_APPS += ["django_browser_reload"]
+
+if DEBUG:
+    # Add django_browser_reload middleware only in DEBUG mode
+    MIDDLEWARE += [
+        "django_browser_reload.middleware.BrowserReloadMiddleware",
+    ]
