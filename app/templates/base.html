@@ -10,7 +10,7 @@
         var _csrf_placeholder = "{{ csrf_token }}"; 
     </script>
 </head>
-<body class="bg-white text-black font-montserrat">
+<body class="bg-base-100 text-black font-montserrat">
     <div class="navbar bg-secondary text-white grid grid-cols-3 items-center p-4">
         <div class="flex flex-row space-x-4 justify-self-start">
             <a href="{% url 'all_beers' %}" class="hover:text-primary transition duration-500">Toutes les bières</a>
@@ -28,28 +28,24 @@
                 <div tabindex="0" role="button" class="cursor-pointer hover:text-primary transition duration-500">Bienvenue, {{ user.username }}!</div>
                     <ul tabindex="-1" class="menu dropdown-content bg-secondary rounded-box z-1 mt-4 w-52 p-2 shadow-sm">
                         <li><a href="{% url 'account' %}" class="hover:text-primary transition duration-500">Mon compte</a></li>
-                        <li><a href="{% url 'logout' %}" class="hover:text-primary transition duration-500" style="float:right">Déconnexion</a></li>
+                        <li><a href="{% url 'logout' %}" class="hover:text-primary transition duration-500">Déconnexion</a></li>
                     </ul>
                 </div>
             </div>
         </div>        
         {% else %}
-            <a href="{% url 'login' %}" class="hover:text-primary transition duration-500" style="float:right">Connexion</a>
+            <a href="{% url 'login' %}" class="hover:text-primary transition duration-500">Connexion</a>
         {% endif %}
         </div>
         
     </div>
 
     
-    <div class="padding-20 max-w-3xl mx-auto bg-white min-h-screen">
+    <div class="py-5 max-w-3xl mx-auto min-h-screen">
         {% if messages %}
-            <div class="messages" style="margin-bottom: 20px;">
+            <div class="messages" >
                 {% for message in messages %}
-                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" 
-                         style="padding: 10px; border-radius: 5px; margin-bottom: 5px;
-                         {% if message.tags == 'error' %}background:#f8d7da; color:#721c24;{% endif %}
-                         {% if message.tags == 'success' %}background:#d4edda; color:#155724;{% endif %}
-                         {% if message.tags == 'info' %}background:#d1ecf1; color:#0c5460;{% endif %}">
+                    <div class="alert alert-soft {% if message.tags %}alert-{{ message.tags }}{% endif %}">
                         {{ message }}
                     </div>
                 {% endfor %}

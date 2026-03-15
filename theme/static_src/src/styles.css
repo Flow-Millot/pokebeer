@@ -17,10 +17,11 @@
 [data-theme="beer"] {
   --color-primary: #f1c40f;
   --color-secondary: #333;
+  --color-base-100: #ede6e0;
+  --color-base-200: #f7f3f0;
   --color-accent: #eca054;
-  --color-neutral: #162240;
-  --color-base-100: #F8F8F9;
-  --color-primary-100: #f39c12;
+  --color-info: #333;
+  --color-success: #b87e44;
 }
 
 /**

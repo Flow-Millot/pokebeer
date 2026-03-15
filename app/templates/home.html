@@ -8,17 +8,43 @@
     {% if unrated_beers %}
         <div class="beer-list">
             {% for beer in unrated_beers %}
-            <div class="flex items-center justify-between bg-white p-3 mb-3 rounded shadow-sm border">
+            <div class="flex items-center justify-between bg-base-200 p-3 mb-3 rounded shadow-sm border">
                 <div>
                     <strong>{{ beer.name }}</strong> 
                     <span style="color: #666; font-size: 0.9em;">({{ beer.brewery_id.name }})</span>
                     <br>
                     <small>{{ beer.description|truncatechars:80 }}</small>
                 </div>
-                <button onclick="openRateModal('{{ beer.id }}', '{{ beer.name|escapejs }}')" 
-                        class="bg-primary rounded-lg p-2 px-4 text-black">
-                    Noter
-                </button>
+                <button class="btn bg-primary rounded-lg p-2 px-4 text-black" onclick="modal{{beer.id}}.showModal()">Noter</button>
+                <dialog id="modal{{beer.id}}" class="modal">
+                    <div class="modal-box">
+                        <form method="post" action="{% url 'rate_beer' beer.id %}">
+
+                        {% csrf_token %}
+                        
+                        <div style="margin-bottom: 15px;">
+                            <label>{{ rating_form.date.label }}</label>
+                            {{ rating_form.date }}
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label>{{ rating_form.note.label }}</label>
+                            {{ rating_form.note }}
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <label>{{ rating_form.comment.label }}</label>
+                            {{ rating_form.comment }}
+                        </div>
+
+                        <button type="submit" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Enregistrer mon avis
+                        </button>
+                        </form>
+                    </div>
+                    <form method="dialog" class="modal-backdrop">
+                        <button>close</button>
+                    </form>
+                </dialog>
+
             </div>
             {% endfor %}
         </div>
@@ -28,8 +54,8 @@
 </div>
 {% endif %}
 
-<div class="rank-list">
-    <h3>🏆 Top 10 (Ce mois)</h3>
+<div class="pt-3 pb-5 font-montserrat">
+    <h3 class="font-castoro text-2xl">🏆 Top 10 (ce mois)</h3>
     {% if not topMonth %} <p>Pas encore de note pour ce mois.</p> {% endif %}
     <ol>
         {% for beer in topMonth %}
@@ -43,7 +69,7 @@
 </div>
 
 <div class="rank-list" style="background: #fff3cd;">
-    <h3>👑 Top 10 (Global)</h3>
+    <h3 class="font-castoro text-2xl">👑 Top 10 (Global)</h3>
     {% if not top %} <p>Pas encore de note.</p> {% endif %}
     <ol>
         {% for beer in top %}
@@ -55,62 +81,5 @@
     {% endfor %}
     </ol>
 </div>
-
-<div id="rateModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeRateModal()">&times;</span>
-        <h3 id="modalTitle">Noter une bière</h3>
-        
-        <form id="rateForm" method="post" action="">
-            {% csrf_token %}
-            
-            <div style="margin-bottom: 15px;">
-                <label>{{ rating_form.date.label }}</label>
-                {{ rating_form.date }}
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label>{{ rating_form.note.label }}</label>
-                {{ rating_form.note }}
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label>{{ rating_form.comment.label }}</label>
-                {{ rating_form.comment }}
-            </div>
-
-            <button type="submit" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                Enregistrer mon avis
-            </button>
-        </form>
-    </div>
-</div>
-
-<script>
-    var modal = document.getElementById("rateModal");
-    var form = document.getElementById("rateForm");
-    var title = document.getElementById("modalTitle");
-
-    function openRateModal(beerId, beerName) {
-        // 1. On met à jour le titre
-        title.innerText = "Noter : " + beerName;
-        
-        // 2. On change dynamiquement l'URL d'action du formulaire
-        // On remplace le '0' ou le placeholder par l'ID réel
-        form.action = "/rate-beer/" + beerId + "/";
-        
-        // 3. On affiche la modale
-        modal.style.display = "block";
-    }
-
-    function closeRateModal() {
-        modal.style.display = "none";
-    }
-
-    // Fermer si on clique en dehors
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            closeRateModal();
-        }
-    }
-</script>
 
 {% endblock %}
