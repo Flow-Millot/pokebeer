@@ -13,6 +13,8 @@ python manage.py migrate --noinput
 
 # Collecter les fichiers statiques (CSS/JS)
 echo "Collecting static files..."
+python manage.py tailwind install
+python manage.py tailwind build
 python manage.py collectstatic --noinput
 
 # Lancer le serveur

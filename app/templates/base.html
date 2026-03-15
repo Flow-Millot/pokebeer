@@ -1,25 +1,18 @@
 {% load static tailwind_tags %}
 <!DOCTYPE html>
-<html>
+<html data-theme="beer">
 <head>
     {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'css/chat.css' %}">
     <title>PokeBeer</title>
-    <style>
-        body { font-family: sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
-        nav { background: #333; padding: 1rem; color: white; }
-        nav a { color: white; margin-right: 15px; text-decoration: none; }
-        .container { padding: 20px; max-width: 800px; margin: auto; background: white; min-height: 80vh; }
-        .beer-card { border-bottom: 1px solid #ddd; padding: 10px 0; }
-        .rank-list { background: #eef; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
-    </style>
     <script>
         // Cette variable ne sert à rien d'autre qu'à forcer Django à envoyer le cookie
         var _csrf_placeholder = "{{ csrf_token }}"; 
     </script>
 </head>
-<body>
-    <nav>
-        <a href="{% url 'index' %}"><strong style="font-size: 1.2em;">🍺 PokeBeer</strong></a>
+<body class="bg-white text-black">
+    <nav class="bg-secondary p-4 text-white flex items-center gap-4">
+        <a href="{% url 'index' %}" class="font-bold text-xl">🍺 PokeBeer</a>
         <a href="{% url 'all_beers' %}">Toutes les bières</a>
         <a href="{% url 'add_beer' %}">Ajouter une bière</a>
         
@@ -30,7 +23,9 @@
             <a href="{% url 'login' %}" style="float:right">Connexion</a>
         {% endif %}
     </nav>
-    <div class="container">
+
+    
+    <div class="padding-20 max-w-3xl mx-auto bg-white min-h-screen">
         {% if messages %}
             <div class="messages" style="margin-bottom: 20px;">
                 {% for message in messages %}
@@ -63,103 +58,6 @@
         </div>
     </div>
 
-    <style>
-        #chat-circle {
-            position: fixed; bottom: 20px; right: 20px;
-            background: #f1c40f; width: 60px; height: 60px;
-            border-radius: 50%; text-align: center; line-height: 60px;
-            font-size: 30px; cursor: pointer; box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
-            z-index: 1000;
-        }
-        #chat-box {
-            display: none; position: fixed; bottom: 90px; right: 20px;
-            width: 350px; height: 450px; background: white;
-            border-radius: 10px; box-shadow: 0px 5px 15px rgba(0,0,0,0.2);
-            z-index: 1001; flex-direction: column; overflow: hidden;
-        }
-        .chat-header { background: #333; color: white; padding: 15px; font-weight: bold; }
-        #chat-logs { flex: 1; padding: 10px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 10px; }
-        .chat-msg { padding: 10px; border-radius: 10px; max-width: 80%; font-size: 0.9em; }
-        .chat-msg.bot { background: #e1ffc7; align-self: flex-start; }
-        .chat-msg.user { background: #d1e7ff; align-self: flex-end; }
-        .chat-msg.loading { font-style: italic; color: #888; background: transparent; }
-        .chat-input-area { display: flex; border-top: 1px solid #ddd; }
-        #chat-input { flex: 1; padding: 10px; border: none; outline: none; }
-        .chat-input-area button { padding: 0 15px; background: #333; color: white; border: none; cursor: pointer; }
-    </style>
-
-    <script>
-        // Fonction pour récupérer le token CSRF de Django
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-
-        function toggleChat() {
-            var box = document.getElementById("chat-box");
-            box.style.display = (box.style.display === "none" || box.style.display === "") ? "flex" : "none";
-        }
-
-        function handleEnter(e) {
-            if (e.key === "Enter") sendMessage();
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById("chat-input");
-            const logs = document.getElementById("chat-logs");
-            const msg = input.value.trim();
-            
-            if (!msg) return;
-
-            // Affichage user
-            logs.innerHTML += `<div class="chat-msg user">${msg}</div>`;
-            input.value = "";
-            logs.scrollTop = logs.scrollHeight;
-
-            // Loader
-            const loaderId = "loader-" + Date.now();
-            logs.innerHTML += `<div id="${loaderId}" class="chat-msg bot loading">Le sommelier réfléchit... 🍺</div>`;
-            logs.scrollTop = logs.scrollHeight;
-
-            try {
-                // Récupération du token CSRF
-                const csrftoken = getCookie('csrftoken');
-
-                // Appel Django
-                const response = await fetch("/api/chat/", {  // Notez le slash à la fin pour Django
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrftoken // Indispensable pour Django
-                    },
-                    body: JSON.stringify({ message: msg })
-                });
-
-                if (!response.ok) throw new Error("Erreur réseau");
-
-                const data = await response.json();
-                
-                document.getElementById(loaderId).remove();
-                const formattedResponse = data.response.replace(/\n/g, "<br>");
-                logs.innerHTML += `<div class="chat-msg bot">${formattedResponse}</div>`;
-                
-            } catch (error) {
-                if(document.getElementById(loaderId)) document.getElementById(loaderId).remove();
-                logs.innerHTML += `<div class="chat-msg bot" style="color:red">Erreur technique :/</div>`;
-                console.error(error);
-            }
-            logs.scrollTop = logs.scrollHeight;
-        }
-    </script>
+    <script src="{% static 'js/chat.js' %}"></script>
 </body>
 </html>
