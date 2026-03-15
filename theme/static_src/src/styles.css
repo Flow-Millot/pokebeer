@@ -1,4 +1,17 @@
 @import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* DaisyUI en mode Tailwind v4 */
+@plugin "daisyui";
+
+/* Définition de votre thème personnalisé "beer" (mode Tailwind v4 / DaisyUI v5) */
+[data-theme="beer"] {
+  --color-primary: #f1c40f;
+  --color-secondary: #333;
+  --color-accent: #eca054;
+  --color-neutral: #162240;
+  --color-base-100: #F8F8F9;
+}
 
 /**
   * A catch-all path to Django template files, JavaScript, and Python files
