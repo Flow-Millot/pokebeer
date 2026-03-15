@@ -1,4 +1,5 @@
 {% load static tailwind_tags %}
+{% load static %}
 <!DOCTYPE html>
 <html data-theme="beer">
 <head>
@@ -25,8 +26,11 @@
         {% if user.is_authenticated %}
         <div class="flex flex-row space-x-4">
             <div class="dropdown dropdown-end">
-                <div tabindex="0" role="button" class="cursor-pointer hover:text-primary transition duration-500">Bienvenue, {{ user.username }}!</div>
-                    <ul tabindex="-1" class="menu dropdown-content bg-secondary rounded-box z-1 mt-4 w-52 p-2 shadow-sm">
+                <div tabindex="0" role="button" class="cursor-pointer hover:text-primary transition duration-500 hidden lg:block">Bienvenue, {{ user.username }}!</div>
+                <svg tabindex="0" role="button" class="fill-white cursor-pointer hover:text-primary transition duration-500 lg:hidden size-8" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                <path d="M320 312C386.3 312 440 258.3 440 192C440 125.7 386.3 72 320 72C253.7 72 200 125.7 200 192C200 258.3 253.7 312 320 312zM290.3 368C191.8 368 112 447.8 112 546.3C112 562.7 125.3 576 141.7 576L498.3 576C514.7 576 528 562.7 528 546.3C528 447.8 448.2 368 349.7 368L290.3 368z"/>
+                </svg>
+                   <ul tabindex="-1" class="menu dropdown-content bg-secondary rounded-box z-1 mt-4 w-52 p-2 shadow-sm">
                         <li><a href="{% url 'account' %}" class="hover:text-primary transition duration-500">Mon compte</a></li>
                         {% if user.is_staff %}
                         <li>
