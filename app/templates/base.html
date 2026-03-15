@@ -28,6 +28,12 @@
                 <div tabindex="0" role="button" class="cursor-pointer hover:text-primary transition duration-500">Bienvenue, {{ user.username }}!</div>
                     <ul tabindex="-1" class="menu dropdown-content bg-secondary rounded-box z-1 mt-4 w-52 p-2 shadow-sm">
                         <li><a href="{% url 'account' %}" class="hover:text-primary transition duration-500">Mon compte</a></li>
+                        {% if user.is_staff %}
+                        <li>
+                            <a href="{% url 'admin:login' %}"
+                           class="hover:text-primary transition duration-500">Panel administrateur</a>
+                        </li>
+                        {% endif %}
                         <li><a href="{% url 'logout' %}" class="hover:text-primary transition duration-500">Déconnexion</a></li>
                     </ul>
                 </div>

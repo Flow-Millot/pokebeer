@@ -4,14 +4,14 @@
 
 {% if user.is_authenticated %}
 <div class="p-3 font-montserrat">
-    <h3 class="font-castoro text-2xl p-2">🍺 Bières à découvrir</h3>
+    <h3 class="font-castoro text-2xl py-2">🍺 Bières à découvrir</h3>
     {% if unrated_beers %}
         <div class="beer-list">
             {% for beer in unrated_beers %}
             <div class="flex items-center justify-between bg-base-200 p-3 mb-3 rounded shadow-sm border">
                 <div>
                     <strong>{{ beer.name }}</strong> 
-                    <span style="color: #666; font-size: 0.9em;">({{ beer.brewery_id.name }})</span>
+                    <span class="italic">({{ beer.brewery_id.name }})</span>
                     <br>
                     <small>{{ beer.description|truncatechars:80 }}</small>
                 </div>
@@ -21,21 +21,21 @@
                         <form method="post" action="{% url 'rate_beer' beer.id %}">
 
                         {% csrf_token %}
-                        
-                        <div style="margin-bottom: 15px;">
+
+                        <div class="pt-1">
                             <label>{{ rating_form.date.label }}</label>
                             {{ rating_form.date }}
                         </div>
-                        <div style="margin-bottom: 15px;">
+                        <div class="pt-3">
                             <label>{{ rating_form.note.label }}</label>
                             {{ rating_form.note }}
                         </div>
-                        <div style="margin-bottom: 15px;">
+                        <div class="pt-3">
                             <label>{{ rating_form.comment.label }}</label>
                             {{ rating_form.comment }}
                         </div>
 
-                        <button type="submit" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        <button type="submit" class="btn bg-primary hover:bg-primary/70 transition duration-500 w-full rounded-lg p-2">
                         Enregistrer mon avis
                         </button>
                         </form>
@@ -62,13 +62,13 @@
         <li>
             <strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) 
             - ⭐ {{ beer.avg_rating|floatformat:1 }} 
-            <small style="color: grey;">({{ beer.count_rating }} votes)</small>
+            <small>({{ beer.count_rating }} votes)</small>
         </li>
     {% endfor %}
     </ol>
 </div>
 
-<div class="rank-list" style="background: #fff3cd;">
+<div class="rank-list">
     <h3 class="font-castoro text-2xl">👑 Top 10 (Global)</h3>
     {% if not top %} <p>Pas encore de note.</p> {% endif %}
     <ol>
@@ -76,7 +76,7 @@
         <li>
             <strong>{{ beer.name }}</strong> ({{ beer.brewery_id.name }}) 
             - ⭐ {{ beer.avg_rating|floatformat:1 }} 
-            <small style="color: grey;">({{ beer.count_rating }} votes)</small>
+            <small>({{ beer.count_rating }} votes)</small>
         </li>
     {% endfor %}
     </ol>
