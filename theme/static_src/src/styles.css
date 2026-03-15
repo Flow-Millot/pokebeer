@@ -1,8 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&display=swap');
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
 /* DaisyUI en mode Tailwind v4 */
 @plugin "daisyui";
+
+@theme {
+  /* Le préfixe "--font-" indique à Tailwind de créer une classe font-... */
+  --font-montserrat: 'Montserrat', sans-serif;
+  --font-castoro: 'Castoro', serif;
+  --font-bebas: 'Bebas Neue', sans-serif;
+}
 
 /* Définition de votre thème personnalisé "beer" (mode Tailwind v4 / DaisyUI v5) */
 [data-theme="beer"] {
@@ -11,6 +20,7 @@
   --color-accent: #eca054;
   --color-neutral: #162240;
   --color-base-100: #F8F8F9;
+  --color-primary-100: #f39c12;
 }
 
 /**
