@@ -2,29 +2,13 @@
 
 {% block content %}
 
-<style>
-    .modal {
-        display: none; position: fixed; z-index: 1000; left: 0; top: 0;
-        width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);
-    }
-    .modal-content {
-        background-color: #fefefe; margin: 10% auto; padding: 20px;
-        border: 1px solid #888; width: 90%; max-width: 500px; border-radius: 8px;
-    }
-    .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-    .beer-item {
-        display: flex; justify-content: space-between; align-items: center;
-        background: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ddd;
-    }
-</style>
-
 {% if user.is_authenticated %}
-<div style="margin-bottom: 30px;">
-    <h3>🍺 Bières à découvrir</h3>
+<div class="p-3 font-montserrat">
+    <h3 class="font-castoro text-2xl p-2">🍺 Bières à découvrir</h3>
     {% if unrated_beers %}
         <div class="beer-list">
             {% for beer in unrated_beers %}
-            <div class="beer-item">
+            <div class="flex items-center justify-between bg-white p-3 mb-3 rounded shadow-sm border">
                 <div>
                     <strong>{{ beer.name }}</strong> 
                     <span style="color: #666; font-size: 0.9em;">({{ beer.brewery_id.name }})</span>
@@ -32,7 +16,7 @@
                     <small>{{ beer.description|truncatechars:80 }}</small>
                 </div>
                 <button onclick="openRateModal('{{ beer.id }}', '{{ beer.name|escapejs }}')" 
-                        style="background: #007bff; color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer;">
+                        class="bg-primary rounded-lg p-2 px-4 text-black">
                     Noter
                 </button>
             </div>
