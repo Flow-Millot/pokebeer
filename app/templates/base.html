@@ -24,7 +24,11 @@
         </div>
 
         <div class="justify-self-center">
-            <a href="{% url 'index' %}" class="font-bold text-3xl font-castoro hover:text-primary transition duration-500">🍺 PokeBeer</a>
+            <a href="{% url 'index' %}" class="font-bold text-3xl font-castoro hover:text-primary transition duration-500 lg:block hidden">🍺 PokeBeer</a>
+            <a href="{% url 'index' %}" class="grid grid-rows-2 justify-items-center text-center font-bold text-2xl font-castoro hover:text-primary transition duration-500 lg:hidden block">
+                <div>🍺</div>
+                <div>PokeBeer</div>
+            </a>
         </div>
         
         <div class="justify-self-end">
