@@ -13,9 +13,14 @@
 </head>
 <body class="bg-base-100 text-black font-montserrat">
     <div class="navbar bg-secondary text-white grid grid-cols-3 items-center p-4">
-        <div class="flex flex-row space-x-4 justify-self-start">
-            <a href="{% url 'all_beers' %}" class="hover:text-primary transition duration-500">Toutes les bières</a>
-            <a href="{% url 'add_beer' %}" class="hover:text-primary transition duration-500">Ajouter une bière</a>
+        <div class="dropdown dropdown-right flex flex-row space-x-4 justify-self-start">
+            <svg tabindex="0" role="button" class="text-white cursor-pointer hover:text-primary transition duration-500 size-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6H20M4 12H20M4 18H20"/>
+            </svg>
+            <ul tabindex="-1" class="menu dropdown-content bg-secondary rounded-box z-1 mt-4 w-52 p-2 shadow-sm">
+                        <li><a href="{% url 'add_beer' %}" class="hover:text-primary transition duration-500">Ajouter une bière</a></li>
+                        <li><a href="{% url 'all_beers' %}" class="hover:text-primary transition duration-500">Toutes les bières</a></li>
+            </ul>
         </div>
 
         <div class="justify-self-center">
