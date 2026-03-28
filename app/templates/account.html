@@ -1,97 +1,92 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="display: flex; flex-wrap: wrap; gap: 30px; margin-top: 20px;">
+<div class="flex flex-col lg:flex-row gap-6 mt-6">
     
-    <div style="flex: 1; min-width: 300px;">
+    <!-- Profil & Sécurité -->
+    <div class="flex-1 flex flex-col gap-6">
         
-        <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px;">
-            <h3 style="border-bottom: 2px solid #007bff; padding-bottom: 10px; color: #333; margin-top: 0;">
-                👤 Mes Informations
-            </h3>
-            
-            <form method="post">
-                {% csrf_token %}
-                {% for field in profile_form %}
-                    <div style="margin-bottom: 15px;">
-                        <label style="display:block; font-weight: bold; margin-bottom: 5px; color: #555;">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <div style="color: red; font-size: 0.9em;">{{ field.errors }}</div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
+        <!-- Mes Informations -->
+        <div class="card bg-base-100 shadow-lg border border-base-200">
+            <div class="card-body">
+                <h3 class="card-title text-xl border-b-2 border-primary pb-2 text-primary">👤 Mes Informations</h3>
                 
-                <button type="submit" name="btn_profile" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                    Mettre à jour le profil
-                </button>
-            </form>
-        </div>
-
-        <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-            <h3 style="border-bottom: 2px solid #dc3545; padding-bottom: 10px; color: #333; margin-top: 0;">
-                🔒 Sécurité
-            </h3>
-            
-            <form method="post">
-                {% csrf_token %}
-                
-                {% for field in password_form %}
-                    <div style="margin-bottom: 15px;">
-                        <label style="display:block; font-weight: bold; margin-bottom: 5px; color: #555;">{{ field.label }}</label>
-                        <div class="field-wrapper">
+                <form method="post" class="flex flex-col gap-4 mt-2">
+                    {% csrf_token %}
+                    {% for field in profile_form %}
+                        <div class="form-control w-full">
+                            <label class="label"><span class="label-text font-bold">{{ field.label }}</span></label>
                             {{ field }}
+                            {% if field.errors %}
+                                <label class="label"><span class="label-text-alt text-error">{{ field.errors }}</span></label>
+                            {% endif %}
                         </div>
-                        <style> .field-wrapper input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; } </style>
-                        
-                        {% if field.help_text %}
-                            <small style="color: #888; display: block; margin-top: 3px; font-size: 0.8em;">{{ field.help_text|safe }}</small>
-                        {% endif %}
-                        
-                        {% for error in field.errors %}
-                            <div style="color: red; font-size: 0.9em; margin-top: 5px;">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-                
-                <button type="submit" name="btn_password" style="width: 100%; padding: 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                    Changer le mot de passe
-                </button>
-            </form>
+                    {% endfor %}
+                    
+                    <button type="submit" name="btn_profile" class="btn btn-primary w-full text-white mt-2">
+                        Mettre à jour le profil
+                    </button>
+                </form>
+            </div>
         </div>
 
+        <!-- Sécurité -->
+        <div class="card bg-base-100 shadow-lg border border-base-200">
+            <div class="card-body">
+                <h3 class="card-title text-xl border-b-2 border-error pb-2 text-error">🔒 Sécurité</h3>
+                
+                <form method="post" class="flex flex-col gap-4 mt-2">
+                    {% csrf_token %}
+                    {% for field in password_form %}
+                        <div class="form-control w-full">
+                            <label class="label"><span class="label-text font-bold">{{ field.label }}</span></label>
+                            {{ field }}
+                            {% if field.help_text %}
+                                <label class="label"><span class="label-text-alt text-gray-500">{{ field.help_text|safe }}</span></label>
+                            {% endif %}
+                            {% for error in field.errors %}
+                                <label class="label"><span class="label-text-alt text-error">{{ error }}</span></label>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                    
+                    <button type="submit" name="btn_password" class="btn btn-error w-full text-white mt-2">
+                        Changer le mot de passe
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <div style="flex: 2; min-width: 300px;">
-        <h3 style="border-bottom: 2px solid #f1c40f; padding-bottom: 10px; color: #333; margin-top: 0;">
-            🍺 Mon Carnet de Dégustation ({{ my_drinks|length }})
+    <!-- Carnet de Dégustation -->
+    <div class="flex-1">
+        <h3 class="text-2xl font-bold border-b-2 border-secondary pb-2 mb-4 text-secondary">
+            🍺 Mon Carnet ({{ my_drinks|length }})
         </h3>
+        
         {% if my_drinks %}
-            <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div class="flex flex-col gap-4">
                 {% for drink in my_drinks %}
-                <div style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; display: flex; align-items: flex-start;">
-                    
-                    <div style="background: #f8f9fa; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2em; color: #333; margin-right: 15px; border: 2px solid 
-                        {% if drink.note >= 8 %}#28a745
-                        {% elif drink.note >= 5 %}#ffc107
-                        {% else %}#dc3545{% endif %};">
+                <div class="card bg-base-100 shadow flex flex-row border border-base-200 p-4 gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full border-2 flex items-center justify-center font-bold text-lg
+                        {% if drink.note >= 8 %} border-success text-success dropdown shadow-success
+                        {% elif drink.note >= 5 %} border-warning text-warning dropdown shadow-warning
+                        {% else %} border-error text-error dropdown shadow-error {% endif %}">
                         {{ drink.note }}
                     </div>
 
-                    <div style="flex: 1;">
-                        <h4 style="margin: 0 0 5px 0;">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-lg leading-tight">
                             {{ drink.beer_id.name }} 
-                            <span style="font-weight: normal; font-size: 0.9em; color: #666;">
+                            <span class="font-normal text-sm text-gray-500 block">
                                 — {{ drink.beer_id.brewery_id.name }}
                             </span>
                         </h4>
                         
-                        <p style="margin: 0 0 10px 0; font-size: 0.9em; color: #888;">
-                            Bu le {{ drink.date|date:"d F Y" }}
-                        </p>
+                        <p class="text-xs text-info mt-1 mb-2">Bu le {{ drink.date|date:"d F Y" }}</p>
 
                         {% if drink.comment %}
-                            <div style="background: #fdfdfd; padding: 10px; border-left: 3px solid #ddd; font-style: italic; color: #555;">
+                            <div class="bg-base-200 p-3 mt-2 border-l-4 border-secondary italic text-gray-600 text-sm rounded-r-md">
                                 "{{ drink.comment }}"
                             </div>
                         {% endif %}
@@ -100,9 +95,9 @@
                 {% endfor %}
             </div>
         {% else %}
-            <div style="background: #eef; padding: 20px; border-radius: 8px; text-align: center;">
-                <p>Vous n'avez pas encore noté de bière.</p>
-                <a href="{% url 'add_beer' %}" style="color: #007bff; text-decoration: underline;">Commencer à noter !</a>
+            <div class="alert alert-info shadow-lg flex-col mt-4">
+                <span>Vous n'avez pas encore noté de bière.</span>
+                <a href="{% url 'add_beer' %}" class="btn btn-sm btn-ghost">Commencer à noter !</a>
             </div>
         {% endif %}
     </div>
