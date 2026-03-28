@@ -3,3 +3,4 @@ __pycache__/
 .env
 Procfile.tailwind
 node_modules/
+*.jks
