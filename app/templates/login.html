@@ -1,28 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background: white;">
-    <h2 style="text-align: center;">Connexion</h2>
-    
-    <form method="post">
-        {% csrf_token %}
-        {% for field in form %}
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom: 5px;">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <div style="color: red; font-size: 0.9em;">{{ field.errors }}</div>
-                {% endif %}
-            </div>
-        {% endfor %}
+<div class="card bg-base-100 shadow-xl border border-base-200 mt-10">
+    <div class="card-body">
+        <h2 class="card-title text-2xl justify-center font-castoro mb-4">🍺 Connexion</h2>
         
-        <button type="submit" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-            Se Connecter
-        </button>
-    </form>
-    
-    <p style="text-align: center; margin-top: 15px;">
-        Pas encore de compte ? <a href="{% url 'register' %}">S'inscrire</a>
-    </p>
+        <form method="post" class="flex flex-col gap-4">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-control w-full">
+                    <label class="label"><span class="label-text font-bold">{{ field.label }}</span></label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <label class="label"><span class="label-text-alt text-error">{{ field.errors }}</span></label>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn btn-primary w-full mt-4 text-white">
+                Se Connecter
+            </button>
+        </form>
+        
+        <p class="text-center mt-6 text-sm text-gray-600">
+            Pas encore de compte ? <a href="{% url 'register' %}" class="text-primary hover:underline font-bold">S'inscrire</a>
+        </p>
+    </div>
 </div>
 {% endblock %}
