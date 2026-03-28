@@ -5115,6 +5115,11 @@
     }
   }
   @media (width >= 48rem) {
+    .md\:max-w-md {
+      max-width: var(--container-md);
+    }
+  }
+  @media (width >= 48rem) {
     .md\:grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
