@@ -29,7 +29,7 @@
                         {{ beer_form.brewery_name.errors }}
                     </div>
 
-                    <div class="flex flex-col gap-4 mb-4">
+                    <div class="flex flex-col md:flex-row gap-4 mb-4">
                         <div class="form-control flex-1">
                             <label class="label"><span class="label-text font-bold">{{ beer_form.degree.label }}</span></label>
                             {{ beer_form.degree }}
@@ -75,7 +75,7 @@
                 </section>
 
                 <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg w-full px-10 text-white font-bold">
+                    <button type="submit" class="btn btn-primary btn-lg w-full md:w-auto px-10 text-white font-bold">
                         Enregistrer le tout
                     </button>
                 </div>

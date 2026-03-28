@@ -4412,6 +4412,9 @@
   .bg-base-200 {
     background-color: var(--color-base-200);
   }
+  .bg-base-300 {
+    background-color: var(--color-base-300);
+  }
   .bg-blue-700 {
     background-color: var(--color-blue-700);
   }
@@ -5098,6 +5101,11 @@
   .focus\:outline-none:focus {
     --tw-outline-style: none;
     outline-style: none;
+  }
+  @media (width >= 40rem) {
+    .sm\:max-w-md {
+      max-width: var(--container-md);
+    }
   }
   @media (width >= 48rem) {
     .md\:inset-0 {
